@@ -43,7 +43,7 @@ stringData:
   type: "git"
   url: "git@github.com:frenoid/hobby-cluster.git"
   sshPrivateKey: <replaceMe>
-```yaml
+```
 
 Replace the *<replaceMe>* with the private key used to access the github repo and apply the secret
 `kubectl -nargocd apply -f argocd/repo-secret.yaml`
