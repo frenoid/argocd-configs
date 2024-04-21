@@ -87,11 +87,57 @@ Replace the `<replaceMe>` with the private key used to access the github repo an
 ## Install the sealed-secrets application
 The sealed-secrets application is needed to decrypt secrets for all other applications
 
-### Install the application
+### Install the ArgoCD application
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
 Go to ArgoCD UI and you will see that the application is installed<br>
-![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")
+![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br>
+
+### Install the kubeseal binary
+The kubeseal binary will allow you to encrypt/decrypt SealedSecrets<br>
+
+Install the kubeseal binary.<br>
+```sh
+https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.26.2/kubeseal-0.26.2-linux-amd64.tar.gz
+tar -xvzf kubeseal-0.26.2-linux-amd64.tar.gz kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+```
+
+Retrieve the tls.crt and concatenate it into a file<br>
+`kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets --fetch-cert > ~/.ssh/kubeseal.crt` <br>
 
 
+Test you are able to encrypt secrets using kubeseal<br>
+`kubectl -n default create secret generic test-secret --from-literal=username=username --from-literal=password=password -oyaml --dry-run=client | kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets`<br>
+![Example Sealed Secret](./argocd/images/example-sealed-secret.png "Example Sealed Secret")<br>
 
+### Replace the repo-secret-hobby-cluster with a Sealed Secret
+We will now replace previously create *repo-secret-hobby-cluster* secret with a Sealed Secret<br>
+
+First, we patch the existing secret with a annotation allowing the secret to be overwritten when a Sealed Secret unsealed in the same name and namespace<br>
+`kubectl -n argocd patch secret repo-secret-hobby-cluster -p '{"metadata": {"annotations": {"sealedsecrets.bitnami.com/managed": "true"}}}`<br>
+
+Next, we create a Sealed Secret from the existing repo secret<br>
+`kubectl -n argocd get secret repo-secret-hobby-cluster -oyaml | kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets --name repo-secret-hobby-cluster --format yaml -w sealed-secret-repo-secret-hobby-cluster.yaml`<br>
+
+We can now create the Sealed Secret<br>
+`kubectl -f apply sealed-secret-repo-secret-hobby-cluster.yaml`<br>
+
+Check that the Sealed Secret was created successfully<br>
+`kubectl -n argocd get sealedsecret`<br>
+![Sealed Secret created](./argocd/images/created-sealed-secret.png "Sealed Secret successfully created")<br>
+
+The secret *repo-secret-hobby-cluster* is now being managed by the Sealed Secrets controller and will be synced if the associated Sealed Secret changes<br>
+
+You can see this by deleting the secret *repo-secret-hobby-cluster*<br>
+`kubectl -n argocd delete secret repo-secret-hobby-cluster`<br>
+
+Now see that the secret is re-created almost instantaneously.<br>
+`kubectl -n argocd get secret`
+![Secret is re-created](./argocd/images/secret-recreated.png "Secret successfully re-created")<br>
+
+Sealed Secrets are protected by asymmetric encryption. The public key can be used to encrypt the secret but only the private key, controlled by the Sealed Secrets controller in the cluster can decrypt the secret<br>
+
+It is safe to commit both the [Sealed Secret](./argocd/sealed-secret-repo-secret-hobby-cluster.yaml) and the [public key](./argocd/kubeseal.crt) to the code repository
+
+However the private key used by the Sealed Secrets controller must remain a secret.
