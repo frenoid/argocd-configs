@@ -20,5 +20,29 @@ Log into the ArgoCD at [http://argocd.mlnow.frenoid.com:30080/](http://argocd.ml
 Username: admin
 Password: <argoCDAdminPassword>
 
+Install the repo-secret for hobby-cluster
+
+In [./argocd/repo-secret.yaml](./argocd/repo-secret.yaml), You will see
+`
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    managed-by: argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/secret-type: repository
+  name: repo-secret-hobby-cluster
+  namespace: argocd
+type: Opaque
+stringData:
+  name: "kind-configs"
+  project: "default"
+  type: "git"
+  url: "git@github.com:frenoid/hobby-cluster.git"
+  sshPrivateKey: <replaceMe>
+`
+
+Replace the *<replaceMe>* with the private key used to access the github repo and apply the secret
+`kubectl -nargocd apply -f argocd/repo-secret.yaml`
 
 
