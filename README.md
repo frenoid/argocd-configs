@@ -26,22 +26,22 @@ Install the repo-secret for hobby-cluster
 
 In [./argocd/repo-secret.yaml](./argocd/repo-secret.yaml), You will see <br>
 
-> apiVersion: v1
-> kind: Secret
-> metadata:
->   annotations:
->     managed-by: argocd.argoproj.io
->   labels:
->     argocd.argoproj.io/secret-type: repository
->   name: repo-secret-hobby-cluster
->   namespace: argocd
-> type: Opaque
-> stringData:
->   name: "kind-configs"
->   project: "default"
->   type: "git"
->   url: "git@github.com:frenoid/hobby-cluster.git"
->   sshPrivateKey: <replaceMe>
+> apiVersion: v1<br>
+> kind: Secret<br>
+> metadata:<br>
+>   annotations:<br>
+>     managed-by: argocd.argoproj.io <br>
+>   labels: <br>
+>     argocd.argoproj.io/secret-type: repository <br>
+>   name: repo-secret-hobby-cluster <br>
+>   namespace: argocd <br>
+> type: Opaque <br>
+> stringData: <br>
+>   name: "kind-configs"<br>
+>   project: "default"<br>
+>   type: "git"<br>
+>   url: "git@github.com:frenoid/hobby-cluster.git"<br>
+>   sshPrivateKey: <replaceMe><br>
 
 
 Replace the *<replaceMe>* with the private key used to access the github repo and apply the secret
