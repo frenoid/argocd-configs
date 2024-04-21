@@ -42,7 +42,8 @@ stringData:
   project: "default"
   type: "git"
   url: "git@github.com:frenoid/hobby-cluster.git"
-  sshPrivateKey: <replaceMe>
+  sshPrivateKey: |
+    <replaceMe>
 ```
 
 Replace the `<replaceMe>` with the private key used to access the github repo and apply the secret <br>
