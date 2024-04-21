@@ -14,12 +14,29 @@ You must have [docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s
 Then create a kind cluster<br>
 `kind create cluster --config ./kind-cluster/cluster-config.yaml`
 
+This creates 1 master node and 2 worker nodes using docker containers
+Note that 1 of the worker notes has ports 30080 and 30443 exposed on the host machine for ingress<br>
+You can see this by running<br>
+`docker ps`
+![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")
+
+
 Create a namespace for the nginx ingress controller<br>
 `kubectl create ns ingress-nginx`
 
-Install nginx-ingress controller
+Install nginx-ingress controller<br>
 `kubectl -n ingress-nginx apply -f ./kind-cluster/ingress-nginx.yaml`
 
+Check that the ingress pod is running on worker 1
+`kubectl -n ingress-nginx get pod -owide`
+![Ingress pods are running](./kind-cluster/images/ingress-pod-node-location.png "Ingress pods are running")
+
+Test that the http ingress port is working <br>
+`curl http://localhost:30080`
+
+Test that the https ingress port is working <br>
+`curl https://localhost:30443 --insecure` 
+![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")
 
 ### Install ArgoCD
 Create an argocd namespace<br>
@@ -73,7 +90,7 @@ The sealed-secrets application is needed to decrypt secrets for all other applic
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
 Go to ArgoCD UI and you will see that the application is installed<br>
-![The San Juan Mountains are beautiful!](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")
+![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")
 
 
 
