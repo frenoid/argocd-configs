@@ -55,7 +55,8 @@ The sealed-secrets application is needed to decrypt secrets for all other applic
 ### Install the application
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
-Go to ArgoCD UI and you will see that the application is installed
+Go to ArgoCD UI and you will see that the application is installed<br>
+![The San Juan Mountains are beautiful!](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")
 
 
 
