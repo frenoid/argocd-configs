@@ -1,9 +1,10 @@
 # ArgoCD and Application configurations
 This repo stores configurations to install
 1. A kind cluster
-2. ArgoCD
-3. Sealed Secrets
-4. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)
+2. Nginx Ingress controller
+3. ArgoCD
+4. Sealed Secrets
+5. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)
 
 ## Bootstrapping
 We first begin with creating a Kubernetes cluster using kind. <br> 
@@ -18,25 +19,25 @@ This creates 1 master node and 2 worker nodes using docker containers
 Note that 1 of the worker notes has ports 30080 and 30443 exposed on the host machine for ingress<br>
 You can see this by running<br>
 `docker ps`
-![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")
+![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")<br>
 
-
+### Install the Nginx Ingress Controller
 Create a namespace for the nginx ingress controller<br>
-`kubectl create ns ingress-nginx`
+`kubectl create ns ingress-nginx`<br>
 
 Install nginx-ingress controller<br>
-`kubectl -n ingress-nginx apply -f ./kind-cluster/ingress-nginx.yaml`
+`kubectl -n ingress-nginx apply -f ./kind-cluster/ingress-nginx.yaml`<br>
 
-Check that the ingress pod is running on worker 1
-`kubectl -n ingress-nginx get pod -owide`
-![Ingress pods are running](./kind-cluster/images/ingress-pod-node-location.png "Ingress pods are running")
+Check that the ingress pod is running on worker 1<br>
+`kubectl -n ingress-nginx get pod -owide`<br>
+![Ingress pods are running](./kind-cluster/images/ingress-pod-node-location.png "Ingress pods are running")<br>
 
 Test that the http ingress port is working <br>
-`curl http://localhost:30080`
+`curl http://localhost:30080`<br>
 
 Test that the https ingress port is working <br>
-`curl https://localhost:30443 --insecure` 
-![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")
+`curl https://localhost:30443 --insecure` <br>
+![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")<br>
 
 ### Install ArgoCD
 Create an argocd namespace<br>
