@@ -4,10 +4,10 @@ This repo stores configurations to install
 2. Nginx Ingress controller
 3. ArgoCD
 4. Sealed Secrets
-5. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)
+5. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)<br><br>
 
 ## Bootstrapping
-We first begin with creating a Kubernetes cluster using kind. <br> 
+We first begin with creating a Kubernetes cluster using kind. <br><br>
 
 ### Create a kind cluster
 You must have [docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s.io/) installed.<br>
@@ -19,7 +19,7 @@ This creates 1 master node and 2 worker nodes using docker containers
 Note that 1 of the worker notes has ports 30080 and 30443 exposed on the host machine for ingress<br>
 You can see this by running<br>
 `docker ps`
-![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")<br>
+![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")<br><br>
 
 ### Install the Nginx Ingress Controller
 Create a namespace for the nginx ingress controller<br>
@@ -37,7 +37,7 @@ Test that the http ingress port is working <br>
 
 Test that the https ingress port is working <br>
 `curl https://localhost:30443 --insecure` <br>
-![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")<br>
+![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")<br><br>
 
 ### Install ArgoCD
 Create an argocd namespace<br>
@@ -50,11 +50,11 @@ Install the ArgoCD ingress<br>
 `kubectl -nargocd apply -f argocd/ingress.yaml`
 
 Get the ArgoCD admin password<br>
-`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+`kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`<br>
 
 Log into the ArgoCD at [http://argocd.mlnow.frenoid.com:30080/](http://argocd.mlnow.frenoid.com:30080/)<br>
-Username: admin<br>
-Password: <argoCDAdminPassword>
+Username: *admin*<br>
+Password: *argoCDAdminPassword*<br><br>
 
 ### Install the repository secret
 Install the repo-secret for hobby-cluster
@@ -82,16 +82,16 @@ stringData:
 ```
 
 Replace the `<replaceMe>` with the private key used to access the github repo and apply the secret <br>
-`kubectl -nargocd apply -f argocd/repo-secret.yaml`
+`kubectl -nargocd apply -f argocd/repo-secret.yaml`<br><br>
 
 ## Install the sealed-secrets application
-The sealed-secrets application is needed to decrypt secrets for all other applications
+The sealed-secrets application is needed to decrypt secrets for all other applications<br><br>
 
 ### Install the ArgoCD application
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
 Go to ArgoCD UI and you will see that the application is installed<br>
-![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br>
+![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br><br>
 
 ### Install the kubeseal binary
 The kubeseal binary will allow you to encrypt/decrypt SealedSecrets<br>
@@ -109,7 +109,7 @@ Retrieve the tls.crt and concatenate it into a file<br>
 
 Test you are able to encrypt secrets using kubeseal<br>
 `kubectl -n default create secret generic test-secret --from-literal=username=username --from-literal=password=password -oyaml --dry-run=client | kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets`<br>
-![Example Sealed Secret](./argocd/images/example-sealed-secret.png "Example Sealed Secret")<br>
+![Example Sealed Secret](./argocd/images/example-sealed-secret.png "Example Sealed Secret")<br><br>
 
 ### Replace the repo-secret-hobby-cluster with a Sealed Secret
 We will now replace previously create *repo-secret-hobby-cluster* secret with a Sealed Secret<br>
