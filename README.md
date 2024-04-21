@@ -49,4 +49,13 @@ stringData:
 Replace the `<replaceMe>` with the private key used to access the github repo and apply the secret <br>
 `kubectl -nargocd apply -f argocd/repo-secret.yaml`
 
+## Install the sealed-secrets application
+The sealed-secrets application is needed to decrypt secrets for all other applications
+
+### Install the application
+`kubectl apply -f applications/sealed-secrets.yaml`<br>
+
+Go to ArgoCD UI and you will see that the application is installed
+
+
 
