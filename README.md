@@ -1,8 +1,25 @@
 # ArgoCD and Application configurations
-This repo stores configurations to install ArgoCD and Applications
+This repo stores configurations to install
+1. A kind cluster
+2. ArgoCD
+3. Sealed Secrets
+4. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)
 
-## To bootstrap ArgoCD
-Have a working Kubernetes cluster, kubectl installed along with kubeconfig
+## Bootstrapping
+We first begin with creating a Kubernetes cluster using kind. <br> 
+
+### Create a kind cluster
+You must have [docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s.io/) installed.<br>
+
+Then create a kind cluster<br>
+`kind create cluster --config ./kind-cluster/cluster-config.yaml`
+
+Create a namespace for the nginx ingress controller<br>
+`kubectl create ns ingress-nginx`
+
+Install nginx-ingress controller
+`kubectl -n ingress-nginx apply -f ./kind-cluster/ingress-nginx.yaml`
+
 
 ### Install ArgoCD
 Create an argocd namespace<br>
