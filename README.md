@@ -1,4 +1,6 @@
 # ArgoCD and Application configurations
+Want __GitOps__ and __Kubernetes__ on a single machine? Look no further!
+
 This repo stores configurations to install
 1. A kind cluster
 2. Nginx Ingress controller
@@ -7,17 +9,17 @@ This repo stores configurations to install
 5. Other applications in [hobby-cluster](https://github.com/frenoid/hobby-cluster)<br><br>
 
 ## Bootstrapping
-We first begin with creating a Kubernetes cluster using kind. <br><br>
+First, create a Kubernetes cluster using kind. <br><br>
 
 ### Create a kind cluster
-You must have [docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s.io/) installed.<br>
+[docker](https://www.docker.com/) and [kind](https://kind.sigs.k8s.io/) must be installed.<br>
 
-Then create a kind cluster<br>
+Next, create a kind cluster using the kind cli and cluster config file<br>
 `kind create cluster --config ./kind-cluster/cluster-config.yaml`
 
-This creates 1 master node and 2 worker nodes using docker containers
-Note that 1 of the worker notes has ports 30080 and 30443 exposed on the host machine for ingress<br>
-You can see this by running<br>
+1 master node and 2 worker nodes are created using docker containers<br>
+Note that 1 of the worker nodes has ports 30080 and 30443 exposed on the host machine for ingress<br>
+Observe this by running<br>
 `docker ps`
 ![Kind Cluster running in Docker](./kind-cluster/images/docker-ps-output.png "1 master 2 worker")<br><br>
 
@@ -85,16 +87,16 @@ Replace the `<replaceMe>` with the private key used to access the github repo an
 `kubectl -nargocd apply -f argocd/repo-secret.yaml`<br><br>
 
 ## Install the sealed-secrets application
-The sealed-secrets application is needed to decrypt secrets for all other applications<br><br>
+The sealed-secrets application is needed to decrypt secrets and is a pre-requisite install [other applications](/argocd-configs/applications/)<br><br>
 
 ### Install the ArgoCD application
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
-Go to ArgoCD UI and you will see that the application is installed<br>
+Go to ArgoCD UI and you will see that the sealed-secrets application has been installed<br>
 ![Installed Sealed Secrets](/argocd-configs/argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br><br>
 
 ### Install the kubeseal binary
-The kubeseal binary will allow you to encrypt/decrypt SealedSecrets<br>
+The kubeseal binary will allow you to encrypt/decrypt SealedSecrets. It obtains the public certificate from a secret in the Kubernetes cluster's sealed-secrets namespace<br>
 
 Install the kubeseal binary.<br>
 ```sh
@@ -102,23 +104,53 @@ https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.26.2/kubesea
 tar -xvzf kubeseal-0.26.2-linux-amd64.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 ```
+<br>
 
 Retrieve the tls.crt and concatenate it into a file<br>
-`kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets --fetch-cert > ~/.ssh/kubeseal.crt` <br>
-
-
+```bash
+kubeseal \
+  --controller-namespace=sealed-secrets \
+  --controller-name=sealed-secrets \
+  --fetch-cert > ~/.ssh/kubeseal.crt
+```
+<br>
 Test you are able to encrypt secrets using kubeseal<br>
-`kubectl -n default create secret generic test-secret --from-literal=username=username --from-literal=password=password -oyaml --dry-run=client | kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets`<br>
+
+```bash
+kubectl -n default \
+  create secret generic test-secret \
+  --from-literal=username=username \
+  --from-literal=password=password \
+  -oyaml \
+  --dry-run=client | kubeseal \
+  --controller-namespace=sealed-secrets \
+  --controller-name=sealed-secrets
+```
+
 ![Example Sealed Secret](/argocd-configs/argocd/images/example-sealed-secret.png "Example Sealed Secret")<br><br>
 
 ### Replace the repo-secret-hobby-cluster with a Sealed Secret
-We will now replace previously create *repo-secret-hobby-cluster* secret with a Sealed Secret<br>
+Now, we will replace previously create *repo-secret-hobby-cluster* secret with a Sealed Secret<br>
 
 First, we patch the existing secret with a annotation allowing the secret to be overwritten when a Sealed Secret unsealed in the same name and namespace<br>
-`kubectl -n argocd patch secret repo-secret-hobby-cluster -p '{"metadata": {"annotations": {"sealedsecrets.bitnami.com/managed": "true"}}}`<br>
+```bash
+kubectl -n argocd \
+  patch secret repo-secret-hobby-cluster \
+  -p '{"metadata": {"annotations": {"sealedsecrets.bitnami.com/managed": "true"}}}
+```
+<br>
 
 Next, we create a Sealed Secret from the existing repo secret<br>
-`kubectl -n argocd get secret repo-secret-hobby-cluster -oyaml | kubeseal --controller-namespace=sealed-secrets --controller-name=sealed-secrets --name repo-secret-hobby-cluster --format yaml -w sealed-secret-repo-secret-hobby-cluster.yaml`<br>
+```bash
+kubectl -n argocd \
+  get secret repo-secret-hobby-cluster -oyaml \
+  | kubeseal --controller-namespace=sealed-secrets \
+  --controller-name=sealed-secrets \
+  --name repo-secret-hobby-cluster \
+  --format yaml \
+  -w sealed-secret-repo-secret-hobby-cluster.yaml
+```
+<br>
 
 We can now create the Sealed Secret<br>
 `kubectl -f apply sealed-secret-repo-secret-hobby-cluster.yaml`<br>
