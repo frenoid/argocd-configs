@@ -20946,6 +20946,12 @@ rules:
   - workflows
   verbs:
   - create
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -21085,6 +21091,8 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-cm
+data:
+  exec.enabled: "true"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -21120,6 +21128,47 @@ metadata:
     app.kubernetes.io/name: argocd-rbac-cm
     app.kubernetes.io/part-of: argocd
   name: argocd-rbac-cm
+data:
+  policy.csv: |
+    p, role:readonly, applications, get, */*, allow
+    p, role:readonly, certificates, get, *, allow
+    p, role:readonly, clusters, get, *, allow
+    p, role:readonly, repositories, get, *, allow
+    p, role:readonly, projects, get, *, allow
+    p, role:readonly, accounts, get, *, allow
+    p, role:readonly, gpgkeys, get, *, allow
+    p, role:readonly, logs, get, */*, allow
+
+    p, role:admin, applications, create, */*, allow
+    p, role:admin, applications, update, */*, allow
+    p, role:admin, applications, delete, */*, allow
+    p, role:admin, applications, sync, */*, allow
+    p, role:admin, applications, override, */*, allow
+    p, role:admin, applications, action/*, */*, allow
+    p, role:admin, applicationsets, get, */*, allow
+    p, role:admin, applicationsets, create, */*, allow
+    p, role:admin, applicationsets, update, */*, allow
+    p, role:admin, applicationsets, delete, */*, allow
+    p, role:admin, certificates, create, *, allow
+    p, role:admin, certificates, update, *, allow
+    p, role:admin, certificates, delete, *, allow
+    p, role:admin, clusters, create, *, allow
+    p, role:admin, clusters, update, *, allow
+    p, role:admin, clusters, delete, *, allow
+    p, role:admin, repositories, create, *, allow
+    p, role:admin, repositories, update, *, allow
+    p, role:admin, repositories, delete, *, allow
+    p, role:admin, projects, create, *, allow
+    p, role:admin, projects, update, *, allow
+    p, role:admin, projects, delete, *, allow
+    p, role:admin, accounts, update, *, allow
+    p, role:admin, gpgkeys, create, *, allow
+    p, role:admin, gpgkeys, delete, *, allow
+    p, role:admin, exec, create, */*, allow
+
+    g, role:admin, role:readonly
+    g, admin, role:admin
+  policy.default: role:readonly
 ---
 apiVersion: v1
 data:
