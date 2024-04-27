@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
       - my-values.yaml
-    path: postgresql
+    path: argo-workflows
     repoURL: git@github.com:frenoid/hobby-cluster.git
     targetRevision: HEAD
   info:
