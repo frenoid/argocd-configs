@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kuberay-operator
-  namespace: kuberay-operator
+  namespace: argocd
 spec:
   destination:
     namespace: kuberay-operator
