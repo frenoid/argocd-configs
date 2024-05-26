@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
       - my-values.yaml
-    path: /
+    path: "."
     repoURL: git@github.com:frenoid/normans-build-pipelines.git
     targetRevision: HEAD
   info:
