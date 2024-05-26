@@ -32,14 +32,14 @@ Install nginx-ingress controller<br>
 
 Check that the ingress pod is running on worker 1<br>
 `kubectl -n ingress-nginx get pod -owide`<br>
-![Ingress pods are running](/argocd-configs/kind-cluster/images/ingress-pod-node-location.png "Ingress pods are running")<br>
+![Ingress pods are running](./kind-cluster/images/ingress-pod-node-location.png "Ingress pods are running")<br>
 
 Test that the http ingress port is working <br>
 `curl http://localhost:30080`<br>
 
 Test that the https ingress port is working <br>
 `curl https://localhost:30443 --insecure` <br>
-![Ingress ports are working](/argocd-configs/kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")<br><br>
+![Ingress ports are working](./kind-cluster/images/testing-ingress-ports.png "Ingress ports 30080 and 30443 are responding")<br><br>
 
 ### Install ArgoCD
 Create an argocd namespace<br>
@@ -61,7 +61,7 @@ Password: *argoCDAdminPassword*<br><br>
 ### Install the repository secret
 Install the repo-secret for hobby-cluster
 
-In [./argocd/repo-secret.yaml](/argocd-configs/argocd/repo-secret.yaml), You will see <br>
+In [./argocd/repo-secret.yaml](./argocd/repo-secret.yaml), You will see <br>
 
 ```yaml
 apiVersion: v1
@@ -93,7 +93,7 @@ The sealed-secrets application is needed to decrypt secrets and is a pre-requisi
 `kubectl apply -f applications/sealed-secrets.yaml`<br>
 
 Go to ArgoCD UI and you will see that the sealed-secrets application has been installed<br>
-![Installed Sealed Secrets](/argocd-configs/argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br><br>
+![Installed Sealed Secrets](./argocd/images/sealed-secrets-argocd-ui.png "ArgoCD UI showing Sealed Secrets installed")<br><br>
 
 ### Install the kubeseal binary
 The kubeseal binary will allow you to encrypt/decrypt SealedSecrets. It obtains the public certificate from a secret in the Kubernetes cluster's sealed-secrets namespace<br>
@@ -127,7 +127,7 @@ kubectl -n default \
   --controller-name=sealed-secrets
 ```
 
-![Example Sealed Secret](/argocd-configs/argocd/images/example-sealed-secret.png "Example Sealed Secret")<br><br>
+![Example Sealed Secret](./argocd/images/example-sealed-secret.png "Example Sealed Secret")<br><br>
 
 ### Replace the repo-secret-hobby-cluster with a Sealed Secret
 Now, we will replace previously create *repo-secret-hobby-cluster* secret with a Sealed Secret<br>
@@ -157,7 +157,7 @@ We can now create the Sealed Secret<br>
 
 Check that the Sealed Secret was created successfully<br>
 `kubectl -n argocd get sealedsecret`<br>
-![Sealed Secret created](/argocd-configs/argocd/images/created-sealed-secret.png "Sealed Secret successfully created")<br>
+![Sealed Secret created](./argocd/images/created-sealed-secret.png "Sealed Secret successfully created")<br>
 
 The secret *repo-secret-hobby-cluster* is now being managed by the Sealed Secrets controller and will be synced if the associated Sealed Secret changes<br>
 
@@ -166,7 +166,7 @@ You can see this by deleting the secret *repo-secret-hobby-cluster*<br>
 
 Now see that the secret is re-created almost instantaneously.<br>
 `kubectl -n argocd get secret`
-![Secret is re-created](/argocd-configs/argocd/images/secret-recreated.png "Secret successfully re-created")<br>
+![Secret is re-created](./argocd/images/secret-recreated.png "Secret successfully re-created")<br>
 
 Sealed Secrets are protected by asymmetric encryption. The public key can be used to encrypt the secret but only the private key, controlled by the Sealed Secrets controller in the cluster can decrypt the secret<br>
 
