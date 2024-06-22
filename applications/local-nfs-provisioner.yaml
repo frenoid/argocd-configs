@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nfs-provisioner
+  name: local-nfs-provisioner
   namespace: argocd
 spec:
   destination:
@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
       - my-values.yaml
-    path: nfs-subdir-external-provisioner
+    path: local-nfs-provisioner
     repoURL: git@github.com:frenoid/hobby-cluster.git
     targetRevision: HEAD
   info:
@@ -28,7 +28,7 @@ spec:
     - ApplyOutOfSyncOnly=true
     managedNamespaceMetadata:
       labels:
-        app: nfs-provisioner
+        app: local-nfs-provisioner
         owner: normanlim
 
   ignoreDifferences: []
