@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jupyterhub
+  namespace: jupyterhub
+spec:
+  destination:
+    namespace: jupyterhub
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      valueFiles:
+      - my-values.yaml
+    path: jupyterhub
+    repoURL: git@github.com:frenoid/hobby-cluster.git
+    targetRevision: HEAD
+  info:
+  - name: "Description: "
+    value: "JupyterHub brings the power of notebooks to groups of users. It gives users access to computational environments and resources without burdening the users with installation and maintenance tasks. Users - including students, researchers, and data scientists - can get their work done in their own workspaces on shared resources which can be managed efficiently by system administrators."
+  syncPolicy:
+    automated:
+        prune: false
+        selfHeal: true
+        allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
+    managedNamespaceMetadata:
+      labels:
+        app: jupyterhub
+        owner: normanlim
+
+  ignoreDifferences: []
+
+  # RevisionHistoryLimit limits the number of items kept in the application's revision history, which is used for
+  # informational purposes as well as for rollbacks to previous versions. This should only be changed in exceptional
+  # circumstances. Setting to zero will store no history. This will reduce storage used. Increasing will increase the
+  # space used to store the history, so we do not recommend increasing it.
+  revisionHistoryLimit: 10
