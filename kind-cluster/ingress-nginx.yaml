@@ -422,7 +422,7 @@ spec:
         app.kubernetes.io/part-of: ingress-nginx
         app.kubernetes.io/version: 1.9.6
     spec:
-      nodeName: kind-worker
+      nodeName: llmops-worker
       containers:
       - args:
         - /nginx-ingress-controller
@@ -509,7 +509,6 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         ingress-ready: "true"
-        kubernetes.io/os: linux
       serviceAccountName: ingress-nginx
       terminationGracePeriodSeconds: 0
       tolerations:

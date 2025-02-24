@@ -39,7 +39,28 @@ nodes:
     hostPort: 30443
     protocol: TCP
     listenAddress: "0.0.0.0"
+  - containerPort: 30101
+    hostPort: 30101
+    protocol: TCP
+    listenAddress: "0.0.0.0"
+  - containerPort: 30102
+    hostPort: 30102
+    protocol: TCP
+    listenAddress: "0.0.0.0"
 - role: worker
   extraMounts:
   - hostPath: /data/kind-cluster/worker-2
-    containerPath: /host-path
+    containerPath: /host-pathA
+  extraPortMappings:
+  - containerPort: 30103
+    hostPort: 30103
+    protocol: TCP
+    listenAddress: "0.0.0.0"
+  - containerPort: 30104
+    hostPort: 30104
+    protocol: TCP
+    listenAddress: "0.0.0.0"
+  - containerPort: 30105
+    hostPort: 30105
+    protocol: TCP
+    listenAddress: "0.0.0.0"
