@@ -136,7 +136,7 @@ First, we patch the existing secret with a annotation allowing the secret to be 
 ```bash
 kubectl -n argocd \
   patch secret repo-secret-hobby-cluster \
-  -p '{"metadata": {"annotations": {"sealedsecrets.bitnami.com/managed": "true"}}}
+  -p '{"metadata": {"annotations": {"sealedsecrets.bitnami.com/managed": "true"}}}'
 ```
 <br>
 
@@ -153,7 +153,7 @@ kubectl -n argocd \
 <br>
 
 We can now create the Sealed Secret<br>
-`kubectl -f apply sealed-secret-repo-secret-hobby-cluster.yaml`<br>
+`kubectl apply -f sealed-secret-repo-secret-hobby-cluster.yaml`<br>
 
 Check that the Sealed Secret was created successfully<br>
 `kubectl -n argocd get sealedsecret`<br>
