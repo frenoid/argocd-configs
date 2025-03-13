@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: batch-workloads
+  namespace: argocd
+spec:
+  destination:
+    namespace: batch-workloads
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: batch-workloads
+    repoURL: git@github.com:frenoid/hobby-cluster.git
+    targetRevision: HEAD
+  info:
+  - name: "Description: "
+    value: "A testbed for running batch jobs, cronjobs and RayJobs using the Kueue scehduler"
+  syncPolicy:
+    automated:
+        prune: false
+        selfHeal: true
+        allowEmpty: false
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
+    managedNamespaceMetadata:
+      labels:
+        app: batch-workloads
+        owner: normanlim
+
+  ignoreDifferences: []
+
+  # RevisionHistoryLimit limits the number of items kept in the application's revision history, which is used for
+  # informational purposes as well as for rollbacks to previous versions. This should only be changed in exceptional
+  # circumstances. Setting to zero will store no history. This will reduce storage used. Increasing will increase the
+  # space used to store the history, so we do not recommend increasing it.
+  revisionHistoryLimit: 10
