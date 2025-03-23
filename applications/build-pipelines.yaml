@@ -30,6 +30,7 @@ spec:
       labels:
         app: build-pipelines
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

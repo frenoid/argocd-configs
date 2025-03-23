@@ -27,6 +27,7 @@ spec:
       labels:
         app: batch-workloads
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

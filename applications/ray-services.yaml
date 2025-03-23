@@ -27,6 +27,7 @@ spec:
       labels:
         app: ray-services
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

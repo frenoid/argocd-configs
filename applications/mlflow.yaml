@@ -30,6 +30,7 @@ spec:
       labels:
         app: mlflow
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

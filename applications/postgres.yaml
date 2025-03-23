@@ -30,6 +30,7 @@ spec:
       labels:
         app: postgres
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

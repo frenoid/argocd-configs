@@ -30,6 +30,7 @@ spec:
       labels:
         app: kueue
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

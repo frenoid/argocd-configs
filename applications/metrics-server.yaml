@@ -30,6 +30,7 @@ spec:
       labels:
         app: metrics-server
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

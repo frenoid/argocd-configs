@@ -30,6 +30,7 @@ spec:
       labels:
         app: kube-prometheus
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 

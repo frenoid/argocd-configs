@@ -30,6 +30,7 @@ spec:
       labels:
         app: mysql
         owner: normanlim
+        monitoring: enabled
 
   ignoreDifferences: []
 
