@@ -435,7 +435,6 @@ spec:
         - --validating-webhook-key=/usr/local/certificates/key
         - --watch-ingress-without-class=true
         - --publish-status-address=localhost
-        - --set controller.allowSnippetAnnotations=true
         env:
         - name: POD_NAME
           valueFrom:
