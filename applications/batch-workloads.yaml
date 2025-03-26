@@ -17,9 +17,8 @@ spec:
     value: "A testbed for running batch jobs, cronjobs and RayJobs using the Kueue scehduler"
   syncPolicy:
     automated:
-        enabled: false
         prune: false
-        selfHeal: true
+        selfHeal: false
         allowEmpty: false
     syncOptions:
     - CreateNamespace=true

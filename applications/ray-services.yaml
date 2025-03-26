@@ -17,9 +17,8 @@ spec:
     value: "RayServices combine the deployment of a RayCluster and a Serve application"
   syncPolicy:
     automated:
-        enabled: false
         prune: false
-        selfHeal: true
+        selfHeal: false
         allowEmpty: false
     syncOptions:
     - CreateNamespace=true
