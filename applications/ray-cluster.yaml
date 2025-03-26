@@ -20,6 +20,7 @@ spec:
     value: "The Ray Cluster runs the Ray jobs and schedules resources such as CPU, GPU, and memory."
   syncPolicy:
     automated:
+        enabled: false
         prune: false
         selfHeal: true
         allowEmpty: false

@@ -20,6 +20,7 @@ spec:
     value: "Apache Airflow is an open-source workflow management platform for data engineering pipelines."
   syncPolicy:
     automated:
+        enabled: false
         prune: false
         selfHeal: true
         allowEmpty: false

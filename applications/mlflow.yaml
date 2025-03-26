@@ -20,6 +20,7 @@ spec:
     value: "Build better models and generative AI apps on a unified, end-to-end, open source MLOps platform"
   syncPolicy:
     automated:
+        enabled: false
         prune: false
         selfHeal: true
         allowEmpty: false
