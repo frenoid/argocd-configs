@@ -12,7 +12,7 @@ spec:
     helm:
       valueFiles:
       - my-values.yaml
-    path: dify
+    path: kubernetes-mcp-server-helmchart
     repoURL: git@github.com:frenoid/hobby-cluster.git
     targetRevision: HEAD
   info:
